@@ -6,6 +6,7 @@ import textwrap
 start = float(sys.argv[1])
 end = float(sys.argv[2])
 out = sys.argv[3]
+transcript = sys.argv[4]
 
 
 def ts(t):
@@ -17,7 +18,7 @@ def ts(t):
 
 lines = []
 n = 1
-for line in open("transcript_en.txt", encoding="utf-8"):
+for line in open(transcript, encoding="utf-8"):
     m = re.match(r"\[(\d+\.?\d*) to (\d+\.?\d*)\] (.*)", line)
     if not m:
         continue
