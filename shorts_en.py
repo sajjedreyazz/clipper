@@ -1,4 +1,4 @@
-import re, subprocess
+﻿import re, subprocess
 from pathlib import Path
 
 VIDEO = "input.mp4"
@@ -74,7 +74,7 @@ for n, (sc, a, b) in enumerate(picked, 1):
             k += 1
     Path(f"short_{n}.srt").write_text("\n".join(srt), encoding="utf-8")
     style = "FontSize=18,Bold=1,Outline=2,Alignment=2,MarginV=30"
-    vf = f"subtitles=short_{n}.srt:force_style='{style}'"
+    vf = f"subtitles=short_{n}.srt:force_style='FontName=Arial,FontSize=18,Bold=1,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,Outline=3,Alignment=2,MarginV=60'"
     if VERTICAL:
         vf = "crop=ih*9/16:ih,scale=1080:1920," + vf
     out = f"final_{n}.mp4"
@@ -83,3 +83,4 @@ for n, (sc, a, b) in enumerate(picked, 1):
                     "-vf", vf, "-c:v", "libx264", "-preset", "veryfast",
                     "-crf", "23", "-c:a", "aac", out], check=True)
 print("\nAll done")
+
