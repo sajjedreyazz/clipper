@@ -5,12 +5,13 @@ VIDEO = "input.mp4"
 TRANSCRIPT = "transcript_en.txt"
 MIN_LEN, MAX_LEN = 25, 60
 N_SHORTS = 3
-VERTICAL = False  # True = crop to 9:16 from the center
+VERTICAL = True  # True = crop to 9:16 from the center
 
 KEYWORDS = ["never", "secret", "solution", "problem", "mistake", "important",
             "why", "how", "best", "truth", "fluent", "confident", "practice",
             "learn", "first thing", "reason"]
 
+BAD_START = re.compile(r'^(and|but|so|then|because|or|also|which|this|that|these|those|they|them|it|he|she|yeah|okay|well|right)\b', re.I)
 pat = re.compile(r"\[([\d.]+) to ([\d.]+)\]\s*(.*)")
 segs = []
 for line in Path(TRANSCRIPT).read_text(encoding="utf-8", errors="ignore").splitlines():
@@ -35,7 +36,7 @@ def stext(x): return " ".join(t[2] for t in x)
 # candidate windows made of whole sentences
 cands = []
 for i in range(len(sents)):
-    if len(stext(sents[i]).split()) < 4:
+    if len(stext(sents[i]).split()) < 4 or BAD_START.match(stext(sents[i])):
         continue
     for j in range(i, len(sents)):
         dur = send(sents[j]) - sstart(sents[i])
@@ -73,8 +74,8 @@ for n, (sc, a, b) in enumerate(picked, 1):
             srt.append(f"{k}\n{ts(s0 - t0)} --> {ts(s1 - t0)}\n{txt}\n")
             k += 1
     Path(f"short_{n}.srt").write_text("\n".join(srt), encoding="utf-8")
-    style = "FontSize=18,Bold=1,Outline=2,Alignment=2,MarginV=30"
-    vf = f"subtitles=short_{n}.srt:force_style='FontName=Arial,FontSize=18,Bold=1,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,Outline=3,Alignment=2,MarginV=60'"
+    style = "FontSize=9,Bold=1,Outline=2,Alignment=2,MarginV=30"
+    vf = f"subtitles=short_{n}.srt:force_style='FontName=Arial,FontSize=9,Bold=1,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,Outline=3,Alignment=2,MarginV=40'"
     if VERTICAL:
         vf = "crop=ih*9/16:ih,scale=720:1280," + vf
     out = f"final_{n}.mp4"
@@ -83,5 +84,10 @@ for n, (sc, a, b) in enumerate(picked, 1):
                     "-vf", vf, "-c:v", "libx264", "-preset", "veryfast",
                     "-crf", "23", "-c:a", "aac", out], check=True)
 print("\nAll done")
+
+
+
+
+
 
 
