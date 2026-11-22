@@ -76,11 +76,12 @@ for n, (sc, a, b) in enumerate(picked, 1):
     style = "FontSize=18,Bold=1,Outline=2,Alignment=2,MarginV=30"
     vf = f"subtitles=short_{n}.srt:force_style='FontName=Arial,FontSize=18,Bold=1,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,Outline=3,Alignment=2,MarginV=60'"
     if VERTICAL:
-        vf = "crop=ih*9/16:ih,scale=1080:1920," + vf
+        vf = "crop=ih*9/16:ih,scale=720:1280," + vf
     out = f"final_{n}.mp4"
     print(f"\nShort {n}: {a:.1f}s to {b:.1f}s  ->  {out}")
     subprocess.run(["ffmpeg", "-y", "-ss", str(t0), "-i", VIDEO, "-t", str(t1 - t0),
                     "-vf", vf, "-c:v", "libx264", "-preset", "veryfast",
                     "-crf", "23", "-c:a", "aac", out], check=True)
 print("\nAll done")
+
 
