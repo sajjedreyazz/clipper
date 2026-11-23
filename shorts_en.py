@@ -2,6 +2,8 @@
 from pathlib import Path
 
 VIDEO = "input.mp4"
+import sys
+SKIP_START = float(sys.argv[1]) if len(sys.argv) > 1 else 0
 TRANSCRIPT = "transcript_en.txt"
 MIN_LEN, MAX_LEN = 25, 60
 N_SHORTS = 3
@@ -36,7 +38,7 @@ def stext(x): return " ".join(t[2] for t in x)
 # candidate windows made of whole sentences
 cands = []
 for i in range(len(sents)):
-    if len(stext(sents[i]).split()) < 4 or BAD_START.match(stext(sents[i])) or sstart(sents[i]) < 30:
+    if len(stext(sents[i]).split()) < 4 or BAD_START.match(stext(sents[i])) or sstart(sents[i]) < SKIP_START:
         continue
     for j in range(i, len(sents)):
         dur = send(sents[j]) - sstart(sents[i])
@@ -85,6 +87,7 @@ for n, (sc, a, b) in enumerate(picked, 1):
                     "-vf", vf, "-c:v", "libx264", "-preset", "veryfast",
                     "-crf", "23", "-c:a", "aac", out], check=True)
 print("\nAll done")
+
 
 
 
