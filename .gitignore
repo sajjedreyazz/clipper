@@ -5,3 +5,5 @@ captions.srt
 __pycache__/
 final_*.mp4
 best_*.mp4
+inbox/
+outbox/
