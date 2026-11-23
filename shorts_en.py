@@ -5,8 +5,10 @@ VIDEO = "input.mp4"
 import sys
 SKIP_START = float(sys.argv[1]) if len(sys.argv) > 1 else 0
 TRANSCRIPT = "transcript_en.txt"
-MIN_LEN, MAX_LEN = 25, 60
-N_SHORTS = 3
+import os
+MIN_LEN = int(os.environ.get("MIN_LEN", 25))
+MAX_LEN = int(os.environ.get("MAX_LEN", 60))
+N_SHORTS = int(os.environ.get("N_SHORTS", 3))
 VERTICAL = True  # True = crop to 9:16 from the center
 
 KEYWORDS = ["never", "secret", "solution", "problem", "mistake", "important",
