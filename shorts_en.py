@@ -46,7 +46,8 @@ for i in range(len(sents)):
             text = " ".join(stext(k) for k in sents[i:j + 1]).lower()
             score = len(text.split()) / dur * 10
             score += 3 * sum(text.count(k) for k in KEYWORDS)
-            score += 2 * text.count("?")
+            score -= 6 * text.count("?")
+            score -= 8 * len(re.findall(r"(^|[.?!] )(yeah|okay|right|mm|um|uh|mhm)[.?!]", text))
             cands.append((score, sstart(sents[i]), send(sents[j])))
 
 cands.sort(reverse=True)
@@ -84,6 +85,7 @@ for n, (sc, a, b) in enumerate(picked, 1):
                     "-vf", vf, "-c:v", "libx264", "-preset", "veryfast",
                     "-crf", "23", "-c:a", "aac", out], check=True)
 print("\nAll done")
+
 
 
 
