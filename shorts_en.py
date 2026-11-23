@@ -37,6 +37,30 @@ def sstart(x): return x[0][0]
 def send(x): return x[-1][1]
 def stext(x): return " ".join(t[2] for t in x)
 
+import subprocess
+import numpy as np
+
+
+def load_loudness():
+    raw = subprocess.run(
+        ["ffmpeg", "-v", "quiet", "-i", VIDEO, "-f", "s16le", "-ac", "1", "-ar", "8000", "-"],
+        capture_output=True).stdout
+    a = np.frombuffer(raw, dtype=np.int16).astype(np.float32)
+    n = len(a) // 8000
+    if n == 0:
+        return np.zeros(1)
+    rms = np.sqrt((a[:n * 8000].reshape(n, 8000) ** 2).mean(axis=1))
+    return rms / (rms.mean() or 1)
+
+
+LOUD = load_loudness()
+
+
+def loud_avg(a, b):
+    seg = LOUD[int(a):int(b) + 1]
+    return float(seg.mean()) if len(seg) else 0.0
+
+
 # candidate windows made of whole sentences
 cands = []
 for i in range(len(sents)):
@@ -89,6 +113,7 @@ for n, (sc, a, b) in enumerate(picked, 1):
                     "-vf", vf, "-c:v", "libx264", "-preset", "veryfast",
                     "-crf", "23", "-c:a", "aac", out], check=True)
 print("\nAll done")
+
 
 
 

@@ -2,3 +2,6 @@
 transcript*.txt
 captions.srt
 *.srt
+__pycache__/
+final_*.mp4
+best_*.mp4
