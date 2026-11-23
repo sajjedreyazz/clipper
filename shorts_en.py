@@ -27,7 +27,7 @@ for line in Path(TRANSCRIPT).read_text(encoding="utf-8", errors="ignore").splitl
 sents, cur = [], []
 for s in segs:
     cur.append(s)
-    if re.search(r'[.?!]["\']?$', s[2]):
+    if re.search(r'[.?!]["\']?$', s[2]) or (s[1] - cur[0][0]) > 12:
         sents.append(cur)
         cur = []
 if cur:
@@ -89,6 +89,7 @@ for n, (sc, a, b) in enumerate(picked, 1):
                     "-vf", vf, "-c:v", "libx264", "-preset", "veryfast",
                     "-crf", "23", "-c:a", "aac", out], check=True)
 print("\nAll done")
+
 
 
 
